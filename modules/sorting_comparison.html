@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>排序算法对比 - AlgoViz Py</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <nav class="sidebar" id="sidebar-nav"></nav>
+
+        <main class="main-content module-shell">
+            <header class="page-header">
+                <h2 class="page-title">排序算法对比</h2>
+                <p class="page-description">
+                    使用同一组数据并行观察不同排序算法。比较次数、移动次数和步数会随着动画实时更新。
+                </p>
+            </header>
+
+            <div class="module-panel">
+                <div class="controls" style="margin-top: 0;">
+                    <button id="btn-generate" class="btn btn-secondary">生成数据</button>
+                    <button id="btn-start" class="btn btn-primary">开始对比</button>
+                    <button id="btn-reset" class="btn btn-secondary">重置</button>
+                    <div class="control-inline control-spacer">
+                        <span>速度:</span>
+                        <select id="select-speed" class="control-field" aria-label="动画速度">
+                            <option value="120">快</option>
+                            <option value="260" selected>中</option>
+                            <option value="520">慢</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="status-text" class="status-text" aria-live="polite">准备就绪</div>
+            </div>
+
+            <div id="comparison-grid" class="comparison-grid" style="margin-top: 1.5rem;"></div>
+        </main>
+    </div>
+
+    <script type="module" src="../js/layout.js"></script>
+    <script type="module" src="../js/visualizations/sorting_comparison.js"></script>
+</body>
+
+</html>

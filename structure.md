@@ -1,45 +1,39 @@
-# 课程内容结构规划
+# 项目结构说明
 
-为了系统性地学习 Python 算法与数据结构，我们设计了以下文件和目录结构。
+本项目是一个纯静态的算法与数据结构可视化学习站点，使用 HTML/CSS/JavaScript ES Modules 实现。
 
 ## 目录结构
 
-```
+```text
 /
-├── index.html              # 演示系统主入口 (Dashboard)
+├── index.html                  # 首页仪表盘
 ├── css/
-│   ├── style.css           # 全局样式 (Premium Design)
-│   └── components.css      # 组件样式
+│   └── style.css               # 全局样式、组件样式、响应式布局
 ├── js/
-│   ├── main.js             # 全局逻辑
-│   ├── visualizations/     # 各类算法的可视化脚本
-│   │   ├── bubble_sort.js
-│   │   └── ...
-│   └── utils.js            # 工具函数 (动画控制, 暂停/播放)
-├── modules/                # 学习模块内容
-│   ├── module1_sorting/
-│   │   ├── bubble_sort.html
-│   │   └── README.md       # 算法讲解与 Python 代码
-│   └── ...
-└── README.md               # 项目说明
+│   ├── modules_data.js         # 模块元数据，驱动首页和侧边栏
+│   ├── layout.js               # 公共侧边栏渲染
+│   ├── dashboard.js            # 首页模块卡片渲染
+│   ├── animation_controller.js # 排序类通用播放控制器
+│   ├── utils.js                # 通用工具函数
+│   ├── viz_engine.js           # 基础数组可视化引擎
+│   └── visualizations/         # 各模块交互逻辑
+├── modules/                    # 每个学习模块的 HTML 页面
+├── tutorials/                  # 长篇教程补充材料
+├── README.md                   # 项目说明
+└── start_server.bat            # Windows 本地启动脚本
 ```
 
-## 学习模块详情
+## 当前模块
 
-### 模块一：基础排序 (Basic Sorting)
+- 排序：冒泡、选择、插入、快速、归并、排序算法对比
+- 线性结构：栈、队列、链表、哈希表
+- 搜索：二分查找
+- 树与图：BST、堆/优先队列、BFS、DFS、Dijkstra
+- 经典题目：有效的括号、反转链表、爬楼梯
 
-- **目标**: 理解基本的元素交换与比较操作。
-- **内容**:
-    1. 冒泡排序 (Bubble Sort)
-    2. 选择排序 (Selection Sort)
-    3. 插入排序 (Insertion Sort)
+## 新增模块流程
 
-### 模块二：线性结构 (Linear Structures)
-
-- **目标**: 掌握数据的存储与访问方式 (LIFO, FIFO, 引用)。
-- **内容**:
-    1. 栈 (Stack) - 演示入栈/出栈
-    2. 队列 (Queue) - 演示入队/出队
-    3. 链表 (Linked List) - 演示节点插入/删除
-
-... (后续模块待扩展)
+1. 在 `modules/` 下新增页面。
+2. 在 `js/visualizations/` 下新增对应脚本。
+3. 在 `js/modules_data.js` 中添加模块元数据。
+4. 如有新的通用视觉元素，优先扩展 `css/style.css`。

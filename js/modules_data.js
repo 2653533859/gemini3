@@ -38,6 +38,13 @@ export const moduleGroups = [
                 description: '稳定排序。递归地将数组分成两半，再合并有序数组。',
                 meta: '包含 Python 代码对照',
             },
+            {
+                href: 'modules/sorting_comparison.html',
+                navLabel: '排序算法对比',
+                title: '排序算法对比',
+                description: '同一组数据并行运行多种排序算法，实时比较比较次数、移动次数和步数。',
+                meta: 'Algorithm Comparison',
+            },
         ],
     },
     {
@@ -65,6 +72,13 @@ export const moduleGroups = [
                 description: '节点通过指针连接。支持头插、尾插和删除。',
                 meta: '包含 Python 代码对照',
             },
+            {
+                href: 'modules/hash_table.html',
+                navLabel: '哈希表 (Hash Table)',
+                title: '哈希表 (Hash Table)',
+                description: '可视化哈希函数、桶、冲突和拉链法，理解 O(1) 查询背后的机制。',
+                meta: 'Hashing & Chaining',
+            },
         ],
     },
     {
@@ -90,6 +104,13 @@ export const moduleGroups = [
                 title: '二叉搜索树 (BST)',
                 description: '可视化树形结构，演示插入与递归查找。',
                 meta: '包含 Python 详细教程',
+            },
+            {
+                href: 'modules/heap.html',
+                navLabel: '堆 / 优先队列',
+                title: '堆与优先队列 (Min Heap)',
+                description: '演示最小堆的插入上浮、弹出堆顶和下沉过程。',
+                meta: 'Priority Queue',
             },
             {
                 href: 'modules/graph_bfs.html',

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>哈希表 (Hash Table) - AlgoViz Py</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <nav class="sidebar" id="sidebar-nav"></nav>
+
+        <main class="main-content module-shell">
+            <header class="page-header">
+                <h2 class="page-title">哈希表 (Hash Table)</h2>
+                <p class="page-description">
+                    将键映射到数组下标。这里使用拉链法处理冲突，观察 key 如何经过 hash 函数落入对应 bucket。
+                </p>
+            </header>
+
+            <div class="module-layout">
+                <section class="module-panel">
+                    <div class="module-panel-title">Buckets / Chaining</div>
+                    <div id="hash-table" class="hash-table" aria-label="哈希表桶列表"></div>
+
+                    <div class="controls">
+                        <input id="input-key" class="control-field" type="text" value="apple" aria-label="键"
+                            placeholder="key">
+                        <input id="input-value" class="control-field" type="text" value="42" aria-label="值"
+                            placeholder="value">
+                        <button id="btn-insert" class="btn btn-primary">插入/更新</button>
+                        <button id="btn-search" class="btn btn-secondary">查找</button>
+                        <button id="btn-delete" class="btn btn-secondary">删除</button>
+                        <button id="btn-reset" class="btn btn-secondary">重置</button>
+                    </div>
+
+                    <div id="status-text" class="status-text" aria-live="polite">准备就绪</div>
+                </section>
+
+                <aside class="module-panel">
+                    <div class="module-panel-title">Python 代码对照</div>
+                    <div class="code-panel" id="code-panel">
+                        <div class="code-line" id="line-hash"><span class="code-keyword">def</span> <span
+                                class="code-func">hash</span>(key):</div>
+                        <div class="code-line" id="line-index">&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                class="code-keyword">return</span> sum(ord(c) <span class="code-keyword">for</span> c
+                            <span class="code-keyword">in</span> key) % size</div>
+                        <div class="code-line" id="line-insert"><span class="code-keyword">def</span> <span
+                                class="code-func">put</span>(key, value):</div>
+                        <div class="code-line" id="line-bucket">&nbsp;&nbsp;&nbsp;&nbsp;bucket = table[hash(key)]</div>
+                        <div class="code-line" id="line-scan">&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                class="code-keyword">for</span> node <span class="code-keyword">in</span> bucket:</div>
+                        <div class="code-line" id="line-update">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                class="code-keyword">if</span> node.key == key: node.value = value</div>
+                        <div class="code-line" id="line-append">&nbsp;&nbsp;&nbsp;&nbsp;bucket.append((key, value))
+                        </div>
+                    </div>
+
+                    <div class="info-grid" style="margin-top: 1rem;">
+                        <div class="info-row">
+                            <div class="info-label">平均复杂度</div>
+                            <div class="info-value">查找 / 插入 / 删除：O(1)</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">最坏复杂度</div>
+                            <div class="info-value">所有 key 冲突时退化为 O(n)</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">核心概念</div>
+                            <div class="info-value">哈希函数、桶、冲突、拉链法</div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="../js/layout.js"></script>
+    <script type="module" src="../js/visualizations/hash_table.js"></script>
+</body>
+
+</html>

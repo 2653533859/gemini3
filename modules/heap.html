@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>堆与优先队列 (Heap) - AlgoViz Py</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <nav class="sidebar" id="sidebar-nav"></nav>
+
+        <main class="main-content module-shell">
+            <header class="page-header">
+                <h2 class="page-title">堆与优先队列 (Min Heap)</h2>
+                <p class="page-description">
+                    最小堆保证父节点优先级小于等于子节点。它是优先队列和 Dijkstra 算法的核心数据结构。
+                </p>
+            </header>
+
+            <div class="module-layout">
+                <section class="module-panel">
+                    <div class="module-panel-title">Heap Tree</div>
+                    <div id="heap-tree" class="heap-tree" aria-label="最小堆树形可视化"></div>
+
+                    <div class="controls">
+                        <input id="input-priority" class="control-field" type="number" value="4" min="1" max="99"
+                            aria-label="优先级">
+                        <input id="input-label" class="control-field" type="text" value="task" aria-label="标签"
+                            placeholder="label">
+                        <button id="btn-insert" class="btn btn-primary">插入</button>
+                        <button id="btn-extract" class="btn btn-secondary">弹出堆顶</button>
+                        <button id="btn-reset" class="btn btn-secondary">重置</button>
+                    </div>
+
+                    <div id="status-text" class="status-text" aria-live="polite">准备就绪</div>
+                </section>
+
+                <aside class="module-panel">
+                    <div class="module-panel-title">Python 代码对照</div>
+                    <div class="code-panel" id="code-panel">
+                        <div class="code-line" id="line-push"><span class="code-func">heappush</span>(heap, item)</div>
+                        <div class="code-line" id="line-up">&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                class="code-keyword">while</span> parent &gt; child: swap()</div>
+                        <div class="code-line" id="line-pop">root = heap[0]</div>
+                        <div class="code-line" id="line-replace">heap[0] = heap.pop()</div>
+                        <div class="code-line" id="line-down">&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                class="code-keyword">while</span> child &lt; parent: swap()</div>
+                    </div>
+
+                    <div class="info-grid" style="margin-top: 1rem;">
+                        <div class="info-row">
+                            <div class="info-label">数组下标关系</div>
+                            <div class="info-value">parent=(i-1)//2, left=2i+1, right=2i+2</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">复杂度</div>
+                            <div class="info-value">插入 / 弹出：O(log n)，查看堆顶：O(1)</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">常见用途</div>
+                            <div class="info-value">任务调度、Top K、Dijkstra 优先队列</div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="../js/layout.js"></script>
+    <script type="module" src="../js/visualizations/heap.js"></script>
+</body>
+
+</html>
