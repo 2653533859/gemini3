@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二分查找 (Binary Search) - AlgoViz Py</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap"
+        rel="stylesheet">
+    <style>
+        .bs-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 300px;
+            width: 100%;
+            position: relative;
+            padding-top: 50px;
+            /* Space for labels */
+        }
+
+        .bs-bar-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            height: 200px;
+            position: relative;
+        }
+
+        .bs-bar {
+            width: 40px;
+            background-color: var(--primary-color);
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .bs-bar.dimmed {
+            background-color: var(--bg-accent);
+            opacity: 0.3;
+        }
+
+        .bs-bar.mid {
+            background-color: var(--warning-color);
+        }
+
+        .bs-bar.found {
+            background-color: var(--success-color);
+        }
+
+        .bs-val {
+            position: absolute;
+            bottom: -25px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Pointers */
+        .pointer {
+            position: absolute;
+            top: -40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: left 0.3s ease;
+            width: 40px;
+            /* match bar width */
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .pointer-label {
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-bottom: 2px;
+        }
+
+        .pointer-arrow {
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid white;
+        }
+
+        #ptr-low .pointer-label {
+            background-color: #64748b;
+            color: white;
+        }
+
+        #ptr-high .pointer-label {
+            background-color: #64748b;
+            color: white;
+        }
+
+        #ptr-mid .pointer-label {
+            background-color: var(--warning-color);
+            color: black;
+        }
+
+        #ptr-target {
+            top: -70px;
+            /* Higher than L/H/M */
+        }
+
+        #ptr-target .pointer-label {
+            background-color: var(--text-accent);
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>AlgoViz Py</h1>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <span>仪表盘 (Dashboard)</span>
+                    </a>
+                </li>
+
+                <li class="nav-category">排序算法 (Sorting)</li>
+                <li class="nav-item">
+                    <a href="bubble_sort.html" class="nav-link">冒泡排序 (Bubble)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="selection_sort.html" class="nav-link">选择排序 (Selection)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="insertion_sort.html" class="nav-link">插入排序 (Insertion)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="quick_sort.html" class="nav-link">快速排序 (Quick)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="merge_sort.html" class="nav-link">归并排序 (Merge)</a>
+                </li>
+
+                <li class="nav-category">线性结构 (Linear)</li>
+                <li class="nav-item">
+                    <a href="linked_list.html" class="nav-link">链表 (Linked List)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="stack.html" class="nav-link">栈 (Stack)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="queue.html" class="nav-link">队列 (Queue)</a>
+                </li>
+
+                <li class="nav-category">搜索算法 (Search)</li>
+                <li class="nav-item">
+                    <a href="binary_search.html" class="nav-link active">二分查找 (Binary)</a>
+                </li>
+
+                <li class="nav-category">树与图 (Trees & Graphs)</li>
+                <li class="nav-item">
+                    <a href="bst.html" class="nav-link">二叉搜索树 (BST)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="graph_bfs.html" class="nav-link">网格 BFS (Grid BFS)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="graph_dfs.html" class="nav-link">网格 DFS (Grid DFS)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="graph_dijkstra.html" class="nav-link">Dijkstra 最短路径</a>
+                </li>
+
+                <!-- Problems -->
+                <li class="nav-category">经典题目 (Problems)</li>
+                <li class="nav-item"><a href="problem_valid_parentheses.html" class="nav-link">有效的括号 (Stack)</a></li>
+                <li class="nav-item"><a href="problem_reverse_linked_list.html" class="nav-link">反转链表 (Linked List)</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content" style="display: flex; flex-direction: column; overflow: hidden;">
+            <header style="margin-bottom: 1.5rem;">
+                <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">二分查找 (Binary Search)</h2>
+                <p style="color: var(--text-secondary);">
+                    在 **有序数组** 中查找特定元素的算法。每次比较中间元素，将搜索范围缩小一半。
+                    时间复杂度: O(log n)。
+                </p>
+            </header>
+
+            <div class="viz-container">
+                <!-- Visualization Area -->
+                <div class="viz-area">
+                    <div id="viz-canvas" style="flex: 1; display:flex; justify-content:center; align-items:center;">
+                        <div class="bs-container">
+                            <div id="bs-bar-container" class="bs-bar-container">
+                                <!-- Bars -->
+                            </div>
+                            <!-- Pointers container, absolute positioned relative to bars -->
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <button id="btn-generate" class="btn btn-secondary">生成有序数组</button>
+                        <input type="number" id="input-target" placeholder="Target"
+                            style="padding: 0.6rem; border-radius: 6px; border: 1px solid var(--bg-accent); background: var(--bg-primary); color: white; width: 80px;"
+                            value="">
+                        <button id="btn-start" class="btn btn-primary">查找</button>
+                        <button id="btn-reset" class="btn btn-secondary">重置</button>
+                    </div>
+
+                    <div id="status-text"
+                        style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                        准备就绪
+                    </div>
+                </div>
+
+                <!-- Code Panel -->
+                <div class="code-panel" id="code-panel">
+                    <div class="code-line" id="line-1"><span class="code-keyword">def</span> <span
+                            class="code-func">binary_search</span>(arr, target):</div>
+                    <div class="code-line" id="line-2">&nbsp;&nbsp;&nbsp;&nbsp;low = 0</div>
+                    <div class="code-line" id="line-3">&nbsp;&nbsp;&nbsp;&nbsp;high = <span
+                            class="code-func">len</span>(arr) - 1</div>
+                    <div class="code-line" id="line-4">&nbsp;</div>
+                    <div class="code-line" id="line-5">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">while</span>
+                        low <= high:</div>
+                            <div class="code-line" id="line-6">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mid =
+                                (low + high) // 2</div>
+                            <div class="code-line" id="line-7">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="code-keyword">if</span> arr[mid] == target:</div>
+                            <div class="code-line" id="line-8">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="code-keyword">return</span> mid <span class="code-comment"># Found</span>
+                            </div>
+                            <div class="code-line" id="line-9">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="code-keyword">elif</span> arr[mid] < target:</div>
+                                    <div class="code-line" id="line-10">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;low =
+                                        mid + 1</div>
+                                    <div class="code-line" id="line-11">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                            class="code-keyword">else</span>:</div>
+                                    <div class="code-line" id="line-12">
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;high =
+                                        mid - 1</div>
+                                    <div class="code-line" id="line-13">&nbsp;</div>
+                                    <div class="code-line" id="line-14">&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                            class="code-keyword">return</span> -1 <span class="code-comment"># Not
+                                            Found</span></div>
+                            </div>
+        </main>
+    </div>
+
+    <script type="module" src="../js/visualizations/binary_search.js"></script>
+</body>
+
+</html>

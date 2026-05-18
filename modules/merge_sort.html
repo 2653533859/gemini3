@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>归并排序 (Merge Sort) - AlgoViz Py</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>AlgoViz Py</h1>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <span>仪表盘 (Dashboard)</span>
+                    </a>
+                </li>
+
+                <li class="nav-category">排序算法 (Sorting)</li>
+                <li class="nav-item">
+                    <a href="bubble_sort.html" class="nav-link">冒泡排序 (Bubble)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="selection_sort.html" class="nav-link">选择排序 (Selection)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="insertion_sort.html" class="nav-link">插入排序 (Insertion)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="quick_sort.html" class="nav-link">快速排序 (Quick)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="merge_sort.html" class="nav-link active">归并排序 (Merge)</a>
+                </li>
+
+                <li class="nav-category">线性结构 (Linear)</li>
+                <li class="nav-item">
+                    <a href="linked_list.html" class="nav-link">链表 (Linked List)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="stack.html" class="nav-link">栈 (Stack)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="queue.html" class="nav-link">队列 (Queue)</a>
+                </li>
+
+                <li class="nav-category">搜索算法 (Search)</li>
+                <li class="nav-item">
+                    <a href="binary_search.html" class="nav-link">二分查找 (Binary)</a>
+                </li>
+
+                <li class="nav-category">树与图 (Trees & Graphs)</li>
+                <li class="nav-item">
+                    <a href="bst.html" class="nav-link">二叉搜索树 (BST)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="graph_bfs.html" class="nav-link">网格 BFS (Grid BFS)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="graph_dfs.html" class="nav-link">网格 DFS (Grid DFS)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="graph_dijkstra.html" class="nav-link">Dijkstra 最短路径</a>
+                </li>
+
+                <!-- Problems -->
+                <li class="nav-category">经典题目 (Problems)</li>
+                <li class="nav-item"><a href="problem_valid_parentheses.html" class="nav-link">有效的括号 (Stack)</a></li>
+                <li class="nav-item"><a href="problem_reverse_linked_list.html" class="nav-link">反转链表 (Linked List)</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content" style="display: flex; flex-direction: column; overflow: hidden;">
+            <header style="margin-bottom: 1.5rem;">
+                <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">归并排序 (Merge Sort)</h2>
+                <p style="color: var(--text-secondary);">
+                    分治法策略。递归地将数组分成两半，分别排序，然后将两个有序子数组合并成一个完整的有序数组。
+                </p>
+            </header>
+
+            <div class="viz-container">
+                <!-- Visualization Area -->
+                <div class="viz-area">
+                    <div id="viz-canvas" class="viz-canvas">
+                        <!-- Bars will be generated here -->
+                    </div>
+
+                    <div class="controls">
+                        <button id="btn-generate" class="btn btn-secondary">生成新数组</button>
+                        <button id="btn-start" class="btn btn-primary">开始排序</button>
+                        <button id="btn-pause" class="btn btn-secondary" disabled>暂停</button>
+                        <button id="btn-reset" class="btn btn-secondary">重置</button>
+
+                        <div
+                            style="margin-left: auto; display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">
+                            <span>速度:</span>
+                            <select id="select-speed"
+                                style="background: var(--bg-primary); color: white; border: 1px solid var(--bg-accent); padding: 4px; border-radius: 4px;">
+                                <option value="FAST">快</option>
+                                <option value="NORMAL" selected>中</option>
+                                <option value="SLOW">慢</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="status-text"
+                        style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                        准备就绪
+                    </div>
+                </div>
+
+                <!-- Code Panel -->
+                <div class="code-panel" id="code-panel">
+                    <div class="code-line" id="line-ms"><span class="code-keyword">def</span> <span
+                            class="code-func">merge_sort</span>(arr):</div>
+                    <div class="code-line" id="line-base">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span>
+                        <span class="code-func">len</span>(arr) <= 1: <span class="code-keyword">return</span> arr
+                    </div>
+                    <div class="code-line" id="line-mid">&nbsp;&nbsp;&nbsp;&nbsp;mid = <span
+                            class="code-func">len</span>(arr) // 2</div>
+                    <div class="code-line" id="line-rec-l">&nbsp;&nbsp;&nbsp;&nbsp;left = merge_sort(arr[:mid])</div>
+                    <div class="code-line" id="line-rec-r">&nbsp;&nbsp;&nbsp;&nbsp;right = merge_sort(arr[mid:])</div>
+                    <div class="code-line" id="line-merge-call">&nbsp;&nbsp;&nbsp;&nbsp;<span
+                            class="code-keyword">return</span> merge(left, right)</div>
+                    <div class="code-line">&nbsp;</div>
+                    <div class="code-line" id="line-merge"><span class="code-keyword">def</span> <span
+                            class="code-func">merge</span>(left, right):</div>
+                    <div class="code-line" id="line-merge-loop">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">#
+                            合并两个有序数组 (Visualization simplifies this)</span></div>
+                    <div class="code-line" id="line-merge-cmp">&nbsp;&nbsp;&nbsp;&nbsp;<span
+                            class="code-keyword">while</span> i < len(left) <span class="code-keyword">and</span> j <
+                                len(right):</div>
+                                <div class="code-line" id="line-merge-append">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span>
+                                    left[i] < right[j]: res.append(left[i])</div>
+                                </div>
+                    </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="../js/visualizations/merge_sort.js"></script>
+</body>
+
+</html>

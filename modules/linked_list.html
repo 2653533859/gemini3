@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>链表 (Linked List) - AlgoViz Py</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Linked List specific styles */
+        .ll-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            /* Allow wrapping if too long */
+            width: 100%;
+            height: 100%;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .ll-node-wrapper {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            /* Spacing for potential wrapping rows */
+            transition: all 0.5s ease;
+        }
+
+        .ll-node {
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-color);
+            border: 2px solid transparent;
+            border-radius: 50%;
+            /* Circle for Linked List nodes */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-family: var(--font-mono);
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .ll-node.new-node {
+            transform: scale(0);
+            animation: popIn 0.4s forwards;
+        }
+
+        @keyframes popIn {
+            80% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .ll-node.highlight {
+            border-color: var(--warning-color);
+            box-shadow: 0 0 10px var(--warning-color);
+        }
+
+        .ll-node.found {
+            background-color: var(--success-color);
+            transform: scale(1.1);
+        }
+
+        .ll-node.deleting {
+            background-color: var(--danger-color);
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        .ll-arrow {
+            width: 50px;
+            height: 2px;
+            background-color: var(--text-secondary);
+            position: relative;
+            margin: 0 5px;
+            transition: width 0.3s ease;
+        }
+
+        .ll-arrow::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -4px;
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 8px solid var(--text-secondary);
+        }
+
+        .ll-null {
+            font-family: var(--font-mono);
+            color: var(--text-secondary);
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        /* Pointer info for head/curr */
+        .node-pointer {
+            position: absolute;
+            top: -25px;
+            color: var(--text-accent);
+            font-size: 0.8rem;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>AlgoViz Py</h1>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <span>仪表盘 (Dashboard)</span>
+                    </a>
+                </li>
+
+                <li class="nav-category">排序算法 (Sorting)</li>
+                <li class="nav-item">
+                    <a href="bubble_sort.html" class="nav-link">冒泡排序 (Bubble)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="selection_sort.html" class="nav-link">选择排序 (Selection)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="insertion_sort.html" class="nav-link">插入排序 (Insertion)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="quick_sort.html" class="nav-link">快速排序 (Quick)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="merge_sort.html" class="nav-link">归并排序 (Merge)</a>
+                </li>
+
+                <li class="nav-category">线性结构 (Linear)</li>
+                <li class="nav-item">
+                    <a href="linked_list.html" class="nav-link active">链表 (Linked List)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="stack.html" class="nav-link">栈 (Stack)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="queue.html" class="nav-link">队列 (Queue)</a>
+                </li>
+
+                <li class="nav-category">搜索算法 (Search)</li>
+                <li class="nav-item">
+                    <a href="binary_search.html" class="nav-link">二分查找 (Binary)</a>
+                </li>
+
+                <li class="nav-category">树与图 (Trees & Graphs)</li>
+                <li class="nav-item">
+                    <a href="bst.html" class="nav-link">二叉搜索树 (BST)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="graph_bfs.html" class="nav-link">网格 BFS (Grid BFS)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="graph_dfs.html" class="nav-link">网格 DFS (Grid DFS)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="graph_dijkstra.html" class="nav-link">Dijkstra 最短路径</a>
+                </li>
+
+                <!-- Problems -->
+                <li class="nav-category">经典题目 (Problems)</li>
+                <li class="nav-item"><a href="problem_valid_parentheses.html" class="nav-link">有效的括号 (Stack)</a></li>
+                <li class="nav-item"><a href="problem_reverse_linked_list.html" class="nav-link">反转链表 (Linked List)</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content" style="display: flex; flex-direction: column; overflow: hidden;">
+            <header style="margin-bottom: 1.5rem;">
+                <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">链表 (Linked List)</h2>
+                <p style="color: var(--text-secondary);">
+                    由节点组成的线性集合，每个节点包含数据和指向下一个节点的指针。<br>
+                    优势：动态大小，易于插入/删除。劣势：随机访问慢。
+                </p>
+            </header>
+
+            <div class="viz-container">
+                <!-- Visualization Area -->
+                <div class="viz-area">
+                    <div id="ll-view" class="ll-container">
+                        <!-- Nodes injected here -->
+                    </div>
+
+                    <div class="controls" style="flex-wrap: wrap;">
+                        <input type="number" id="input-val" placeholder="Value"
+                            style="padding: 0.6rem; border-radius: 6px; border: 1px solid var(--bg-accent); background: var(--bg-primary); color: white; width: 70px;"
+                            value="10">
+                        <input type="number" id="input-idx" placeholder="Index"
+                            style="padding: 0.6rem; border-radius: 6px; border: 1px solid var(--bg-accent); background: var(--bg-primary); color: white; width: 70px;"
+                            value="0">
+
+                        <button id="btn-prepend" class="btn btn-secondary">Prepend (头插)</button>
+                        <button id="btn-append" class="btn btn-primary">Append (尾插)</button>
+                        <button id="btn-insert" class="btn btn-secondary">Insert at Idx</button>
+                        <button id="btn-remove" class="btn btn-secondary">Remove Val</button>
+                    </div>
+
+                    <div id="status-text"
+                        style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                        List is empty
+                    </div>
+                </div>
+
+                <!-- Code Panel -->
+                <div class="code-panel" id="code-panel">
+                    <div class="code-line" id="line-class"><span class="code-keyword">class</span> <span
+                            class="code-func">Node</span>:</div>
+                    <div class="code-line" id="line-init">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span>
+                        <span class="code-func">__init__</span>(self, data):
+                    </div>
+                    <div class="code-line" id="line-init-body">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.data
+                        = data</div>
+                    <div class="code-line" id="line-init-next">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.next
+                        = <span class="code-keyword">None</span></div>
+                    <div class="code-line"> </div>
+                    <div class="code-line" id="line-append"><span class="code-keyword">def</span> <span
+                            class="code-func">append</span>(self, data):</div>
+                    <div class="code-line" id="line-append-node">&nbsp;&nbsp;&nbsp;&nbsp;new_node = Node(data)</div>
+                    <div class="code-line" id="line-append-empty">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if
+                            not</span> self.head: self.head = new_node; <span class="code-keyword">return</span></div>
+                    <div class="code-line" id="line-append-trav">&nbsp;&nbsp;&nbsp;&nbsp;curr = self.head</div>
+                    <div class="code-line" id="line-append-loop">&nbsp;&nbsp;&nbsp;&nbsp;<span
+                            class="code-keyword">while</span> curr.next:</div>
+                    <div class="code-line" id="line-append-loop-body">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;curr = curr.next</div>
+                    <div class="code-line" id="line-append-link">&nbsp;&nbsp;&nbsp;&nbsp;curr.next = new_node</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="../js/visualizations/linked_list.js"></script>
+</body>
+
+</html>

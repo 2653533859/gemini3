@@ -1,0 +1,6 @@
+@echo off
+echo Starting AlgoViz Py Local Server...
+echo Please wait while the browser opens...
+start http://localhost:8000/index.html
+python -m http.server 8000
+pause

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二叉搜索树 (BST) - AlgoViz Py</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap"
+        rel="stylesheet">
+    <style>
+        .bst-container {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0.3) 0%, transparent 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .bst-node {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            z-index: 2;
+            transition: all 0.5s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .bst-node.highlight {
+            background-color: var(--warning-color);
+            transform: scale(1.1);
+        }
+
+        .bst-node.found {
+            background-color: var(--success-color);
+            box-shadow: 0 0 15px var(--success-color);
+        }
+
+        .bst-node.new {
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* SVG Connection Lines */
+        svg.bst-connections {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        line.connection {
+            stroke: var(--text-secondary);
+            stroke-width: 2;
+            opacity: 0.6;
+            transition: all 0.5s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>AlgoViz Py</h1>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <span>仪表盘 (Dashboard)</span>
+                    </a>
+                </li>
+
+                <li class="nav-category">排序算法 (Sorting)</li>
+                <li class="nav-item">
+                    <a href="bubble_sort.html" class="nav-link">冒泡排序 (Bubble)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="selection_sort.html" class="nav-link">选择排序 (Selection)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="insertion_sort.html" class="nav-link">插入排序 (Insertion)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="quick_sort.html" class="nav-link">快速排序 (Quick)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="merge_sort.html" class="nav-link">归并排序 (Merge)</a>
+                </li>
+
+                <li class="nav-category">线性结构 (Linear)</li>
+                <li class="nav-item">
+                    <a href="linked_list.html" class="nav-link">链表 (Linked List)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="stack.html" class="nav-link">栈 (Stack)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="queue.html" class="nav-link">队列 (Queue)</a>
+                </li>
+
+                <li class="nav-category">搜索算法 (Search)</li>
+                <li class="nav-item">
+                    <a href="binary_search.html" class="nav-link">二分查找 (Binary)</a>
+                </li>
+
+                <li class="nav-category">树与图 (Trees & Graphs)</li>
+                <li class="nav-item">
+                    <a href="bst.html" class="nav-link active">二叉搜索树 (BST)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="graph_bfs.html" class="nav-link">网格 BFS (Grid BFS)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="graph_dfs.html" class="nav-link">网格 DFS (Grid DFS)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="graph_dijkstra.html" class="nav-link">Dijkstra 最短路径</a>
+                </li>
+
+                <!-- Problems -->
+                <li class="nav-category">经典题目 (Problems)</li>
+                <li class="nav-item"><a href="problem_valid_parentheses.html" class="nav-link">有效的括号 (Stack)</a></li>
+                <li class="nav-item"><a href="problem_reverse_linked_list.html" class="nav-link">反转链表 (Linked List)</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content" style="display: flex; flex-direction: column; overflow: hidden;">
+            <header
+                style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">二叉搜索树 (BST)</h2>
+                    <p style="color: var(--text-secondary);">
+                        左子树所有节点 < 根节点 < 右子树所有节点。<br>
+                            支持 O(log n) 的快速查找、插入和删除。
+                    </p>
+                </div>
+                <a href="../tutorials/bst.md" target="_blank" class="btn btn-secondary"
+                    style="text-decoration: none; font-size: 0.9rem;">
+                    📖 查看 Python 教程
+                </a>
+            </header>
+
+            <div class="viz-container">
+                <!-- Visualization Area -->
+                <div class="viz-area">
+                    <div id="bst-view" class="bst-container">
+                        <svg class="bst-connections" id="bst-svg"></svg>
+                        <!-- Nodes injected here -->
+                    </div>
+
+                    <div class="controls">
+                        <input type="number" id="input-val" placeholder="Val"
+                            style="padding: 0.6rem; border-radius: 6px; border: 1px solid var(--bg-accent); background: var(--bg-primary); color: white; width: 80px;"
+                            value="50">
+                        <button id="btn-insert" class="btn btn-primary">Insert (插入)</button>
+                        <button id="btn-search" class="btn btn-secondary">Search (查找)</button>
+                        <button id="btn-reset" class="btn btn-secondary">Reset</button>
+                        <div style="width: 1px; height: 24px; background: var(--bg-accent); margin: 0 10px;"></div>
+                        <button id="btn-preorder" class="btn btn-secondary" style="font-size: 0.85rem;">Pre (前)</button>
+                        <button id="btn-inorder" class="btn btn-secondary" style="font-size: 0.85rem;">In (中)</button>
+                        <button id="btn-postorder" class="btn btn-secondary" style="font-size: 0.85rem;">Post
+                            (后)</button>
+                    </div>
+
+                    <div id="status-text"
+                        style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                        Empty Tree
+                    </div>
+                </div>
+
+                <!-- Code Panel -->
+                <div class="code-panel" id="code-panel">
+                    <div class="code-line" id="line-class"><span class="code-keyword">class</span> <span
+                            class="code-func">TreeNode</span>:</div>
+                    <div class="code-line" id="line-init">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span>
+                        <span class="code-func">__init__</span>(self, val):
+                    </div>
+                    <div class="code-line" id="line-init-body">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.val
+                        = val; self.left = None; self.right = None</div>
+                    <div class="code-line"> </div>
+                    <div class="code-line" id="line-insert"><span class="code-keyword">def</span> <span
+                            class="code-func">insert</span>(root, val):</div>
+                    <div class="code-line" id="line-insert-none">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if
+                            not</span> root: <span class="code-keyword">return</span> TreeNode(val)</div>
+                    <div class="code-line" id="line-insert-left">&nbsp;&nbsp;&nbsp;&nbsp;<span
+                            class="code-keyword">if</span> val < root.val:</div>
+                            <div class="code-line" id="line-insert-l-rec">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;root.left = insert(root.left, val)</div>
+                            <div class="code-line" id="line-insert-right">&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="code-keyword">else</span>:</div>
+                            <div class="code-line" id="line-insert-r-rec">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;root.right = insert(root.right, val)
+                            </div>
+                            <div class="code-line" id="line-insert-ret">&nbsp;&nbsp;&nbsp;&nbsp;<span
+                                    class="code-keyword">return</span> root</div>
+                    </div>
+        </main>
+    </div>
+
+    <script type="module" src="../js/visualizations/bst.js"></script>
+</body>
+
+</html>

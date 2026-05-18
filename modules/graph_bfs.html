@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网格图 BFS (Grid BFS) - AlgoViz Py</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap"
+        rel="stylesheet">
+    <style>
+        .grid-container {
+            display: grid;
+            /* Columns will be set via JS: grid-template-columns: repeat(cols, 1fr); */
+            gap: 1px;
+            background-color: var(--bg-accent);
+            border: 1px solid var(--bg-accent);
+            width: 100%;
+            /* height: 400px; Removed fixed height */
+            /* Fixed height for scrollable area if needed, or flex */
+            margin: 0 auto;
+        }
+
+        .grid-node {
+            background-color: var(--bg-primary);
+            width: 100%;
+            aspect-ratio: 1;
+            /* Square cells */
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .grid-node:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .grid-node.wall {
+            background-color: var(--text-secondary);
+            animation: bounce 0.3s ease;
+        }
+
+        .grid-node.start {
+            background-color: var(--success-color);
+            /* Green */
+        }
+
+        .grid-node.target {
+            background-color: var(--danger-color);
+            /* Red */
+        }
+
+        .grid-node.visited {
+            background-color: rgba(99, 102, 241, 0.6);
+            /* Primary color dim */
+            animation: ripple 0.5s ease-out;
+        }
+
+        .grid-node.path {
+            background-color: var(--warning-color);
+            /* Yellow */
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes ripple {
+            from {
+                transform: scale(0.1);
+                border-radius: 100%;
+                background-color: var(--primary-color);
+            }
+
+            to {
+                transform: scale(1);
+                border-radius: 0;
+            }
+        }
+
+        @keyframes bounce {
+            0% {
+                transform: scale(0.8);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0);
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>AlgoViz Py</h1>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <span>仪表盘 (Dashboard)</span>
+                    </a>
+                </li>
+
+                <!-- Sorting -->
+                <li class="nav-category">排序算法 (Sorting)</li>
+                <li class="nav-item"><a href="bubble_sort.html" class="nav-link">冒泡排序 (Bubble)</a></li>
+                <li class="nav-item"><a href="selection_sort.html" class="nav-link">选择排序 (Selection)</a></li>
+                <li class="nav-item"><a href="insertion_sort.html" class="nav-link">插入排序 (Insertion)</a></li>
+                <li class="nav-item"><a href="quick_sort.html" class="nav-link">快速排序 (Quick)</a></li>
+                <li class="nav-item"><a href="merge_sort.html" class="nav-link">归并排序 (Merge)</a></li>
+
+                <!-- Linear -->
+                <li class="nav-category">线性结构 (Linear)</li>
+                <li class="nav-item"><a href="linked_list.html" class="nav-link">链表 (Linked List)</a></li>
+                <li class="nav-item"><a href="stack.html" class="nav-link">栈 (Stack)</a></li>
+                <li class="nav-item"><a href="queue.html" class="nav-link">队列 (Queue)</a></li>
+
+                <!-- Search -->
+                <li class="nav-category">搜索算法 (Search)</li>
+                <li class="nav-item"><a href="binary_search.html" class="nav-link">二分查找 (Binary)</a></li>
+
+                <!-- Trees & Graphs -->
+                <li class="nav-category">树与图 (Trees & Graphs)</li>
+                <li class="nav-item"><a href="bst.html" class="nav-link">二叉搜索树 (BST)</a></li>
+                <li class="nav-item"><a href="graph_bfs.html" class="nav-link active">网格 BFS (Grid BFS)</a></li>
+                <li class="nav-item"><a href="graph_dfs.html" class="nav-link">网格 DFS (Grid DFS)</a></li>
+                <li class="nav-item"><a href="graph_dijkstra.html" class="nav-link">Dijkstra 最短路径</a></li>
+
+                <!-- Problems -->
+                <li class="nav-category">经典题目 (Problems)</li>
+                <li class="nav-item"><a href="problem_valid_parentheses.html" class="nav-link">有效的括号 (Stack)</a></li>
+                <li class="nav-item"><a href="problem_reverse_linked_list.html" class="nav-link">反转链表 (Linked List)</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content" style="display: flex; flex-direction: column; overflow-y: auto;">
+            <header style="margin-bottom: 1.5rem;">
+                <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">广度优先搜索 (BFS) - 网格寻路</h2>
+                <p style="color: var(--text-secondary);">
+                    在网格图中寻找最短路径。BFS 使用队列 (Queue) 层层向外扩展，保证在无权图中找到的路径步数最少。
+                    <br>
+                    <span style="font-size: 0.85rem;">操作: 点击格子绘制/擦除墙壁 (Wall)。</span>
+                </p>
+            </header>
+
+            <div class="viz-container">
+                <!-- Visualization Area -->
+                <div class="viz-area">
+                    <div id="grid-canvas" class="grid-container">
+                        <!-- Grid Nodes injected here -->
+                    </div>
+
+                    <div class="controls">
+                        <button id="btn-start" class="btn btn-primary">开始 BFS</button>
+                        <button id="btn-clear-path" class="btn btn-secondary">清除路径</button>
+                        <button id="btn-clear-board" class="btn btn-secondary">清空墙壁</button>
+
+                        <div
+                            style="margin-left: auto; display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">
+                            <span>起点: <span style="color: var(--success-color);">绿色</span></span>
+                            <span>终点: <span style="color: var(--danger-color);">红色</span></span>
+                        </div>
+                    </div>
+
+                    <div id="status-text"
+                        style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                        准备就绪 (点击格子绘制墙壁)
+                    </div>
+                </div>
+
+                <!-- Code Panel (Simplfied BFS pseudo-code) -->
+                <div class="code-panel" id="code-panel">
+                    <div class="code-line" id="line-def"><span class="code-keyword">def</span> <span
+                            class="code-func">bfs</span>(grid, start, target):</div>
+                    <div class="code-line" id="line-q">&nbsp;&nbsp;&nbsp;&nbsp;queue = deque([start])</div>
+                    <div class="code-line" id="line-visited">&nbsp;&nbsp;&nbsp;&nbsp;visited.add(start)</div>
+                    <div class="code-line" id="line-loop">&nbsp;&nbsp;&nbsp;&nbsp;<span
+                            class="code-keyword">while</span> queue:</div>
+                    <div class="code-line" id="line-pop">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;curr =
+                        queue.popleft()</div>
+                    <div class="code-line" id="line-check">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                            class="code-keyword">if</span> curr == target: <span class="code-keyword">return</span> path
+                    </div>
+                    <div class="code-line" id="line-neighbors">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                            class="code-keyword">for</span> neighbor <span class="code-keyword">in</span>
+                        get_neighbors(curr):</div>
+                    <div class="code-line" id="line-add">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;queue.append(neighbor);
+                        visited.add(neighbor)</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="../js/visualizations/graph_bfs.js"></script>
+</body>
+
+</html>

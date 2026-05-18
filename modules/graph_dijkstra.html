@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dijkstra 最短路径 - AlgoViz Py</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap"
+        rel="stylesheet">
+    <style>
+        .grid-container {
+            display: grid;
+            gap: 1px;
+            background-color: var(--bg-accent);
+            border: 1px solid var(--bg-accent);
+            width: 100%;
+            /* height: 400px; Removed fixed height to allow auto-grow */
+            margin: 0 auto;
+        }
+
+        .grid-node {
+            background-color: var(--bg-primary);
+            width: 100%;
+            aspect-ratio: 1;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Weight Icon/Style */
+        .grid-node.weight {
+            background-color: #713f12;
+            /* Dark Brown for Mud */
+            border: 2px solid #a16207;
+            /* Warning darken */
+        }
+
+        .grid-node.weight::after {
+            content: "5";
+            color: white;
+            font-weight: bold;
+        }
+
+        .grid-node:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .grid-node.wall {
+            background-color: var(--text-secondary);
+            animation: bounce 0.3s ease;
+            border: none;
+        }
+
+        .grid-node.wall::after {
+            content: "";
+        }
+
+        .grid-node.start {
+            background-color: var(--success-color);
+        }
+
+        .grid-node.start::after {
+            content: "S";
+            color: white;
+        }
+
+        .grid-node.target {
+            background-color: var(--danger-color);
+        }
+
+        .grid-node.target::after {
+            content: "E";
+            color: white;
+        }
+
+        .grid-node.visited {
+            background-color: rgba(99, 102, 241, 0.5);
+            animation: ripple 0.5s ease-out;
+        }
+
+        .grid-node.visited.weight {
+            background-color: rgba(161, 98, 7, 0.8);
+            /* Mix of brown and visited */
+        }
+
+        .grid-node.path {
+            background-color: var(--warning-color);
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes ripple {
+            from {
+                transform: scale(0.1);
+                border-radius: 100%;
+            }
+
+            to {
+                transform: scale(1);
+                border-radius: 0;
+            }
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0);
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .mode-active {
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>AlgoViz Py</h1>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <span>仪表盘 (Dashboard)</span>
+                    </a>
+                </li>
+
+                <!-- Sorting -->
+                <li class="nav-category">排序算法 (Sorting)</li>
+                <li class="nav-item"><a href="bubble_sort.html" class="nav-link">冒泡排序 (Bubble)</a></li>
+                <li class="nav-item"><a href="selection_sort.html" class="nav-link">选择排序 (Selection)</a></li>
+                <li class="nav-item"><a href="insertion_sort.html" class="nav-link">插入排序 (Insertion)</a></li>
+                <li class="nav-item"><a href="quick_sort.html" class="nav-link">快速排序 (Quick)</a></li>
+                <li class="nav-item"><a href="merge_sort.html" class="nav-link">归并排序 (Merge)</a></li>
+
+                <!-- Linear -->
+                <li class="nav-category">线性结构 (Linear)</li>
+                <li class="nav-item"><a href="linked_list.html" class="nav-link">链表 (Linked List)</a></li>
+                <li class="nav-item"><a href="stack.html" class="nav-link">栈 (Stack)</a></li>
+                <li class="nav-item"><a href="queue.html" class="nav-link">队列 (Queue)</a></li>
+
+                <!-- Search -->
+                <li class="nav-category">搜索算法 (Search)</li>
+                <li class="nav-item"><a href="binary_search.html" class="nav-link">二分查找 (Binary)</a></li>
+
+                <!-- Trees & Graphs -->
+                <li class="nav-category">树与图 (Trees & Graphs)</li>
+                <li class="nav-item"><a href="bst.html" class="nav-link">二叉搜索树 (BST)</a></li>
+                <li class="nav-item"><a href="graph_bfs.html" class="nav-link">网格 BFS (Grid BFS)</a></li>
+                <li class="nav-item"><a href="graph_dfs.html" class="nav-link">网格 DFS (Grid DFS)</a></li>
+                <li class="nav-item"><a href="graph_dijkstra.html" class="nav-link active">Dijkstra 最短路径</a></li>
+
+                <!-- Problems -->
+                <li class="nav-category">经典题目 (Problems)</li>
+                <li class="nav-item"><a href="problem_valid_parentheses.html" class="nav-link">有效的括号 (Stack)</a></li>
+                <li class="nav-item"><a href="problem_reverse_linked_list.html" class="nav-link">反转链表 (Linked List)</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content" style="display: flex; flex-direction: column; overflow-y: auto;">
+            <header style="margin-bottom: 1.5rem;">
+                <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Dijkstra 最短路径算法</h2>
+                <p style="color: var(--text-secondary);">
+                    适用于带权图。通过维护到起点的距离与优先队列，总是优先扩展当前代价最小的节点。
+                    <br>
+                    <span style="font-size: 0.85rem;">操作: 尝试绘制 <strong>泥沼 (权重: 5)</strong> 看看算法如何绕路。</span>
+                </p>
+            </header>
+
+            <div class="viz-container">
+                <!-- Visualization Area -->
+                <div class="viz-area">
+                    <div id="grid-canvas" class="grid-container">
+                        <!-- Grid Nodes injected here -->
+                    </div>
+
+                    <div class="controls">
+                        <div class="control-group"
+                            style="display:flex; gap:0.5rem; background:rgba(255,255,255,0.05); padding:0.25rem; border-radius:4px;">
+                            <button id="btn-mode-wall" class="btn btn-sm btn-secondary mode-active" title="绘制墙壁">🧱
+                                墙壁</button>
+                            <button id="btn-mode-weight" class="btn btn-sm btn-secondary" title="绘制泥沼 (Cost: 5)">⛰️ 泥沼
+                                (5)</button>
+                        </div>
+
+                        <button id="btn-start" class="btn btn-primary">开始 Dijkstra</button>
+                        <button id="btn-clear-path" class="btn btn-secondary">清除路径</button>
+                        <button id="btn-clear-board" class="btn btn-secondary">重置地图</button>
+                    </div>
+
+                    <div id="status-text"
+                        style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                        准备就绪
+                    </div>
+                </div>
+
+                <!-- Code Panel -->
+                <div class="code-panel" id="code-panel">
+                    <div class="code-line" id="line-def"><span class="code-keyword">def</span> <span
+                            class="code-func">dijkstra</span>(grid, start, target):</div>
+                    <div class="code-line" id="line-init">&nbsp;&nbsp;&nbsp;&nbsp;dists = {node: <span
+                            class="code-keyword">inf</span>}; dists[start] = 0</div>
+                    <div class="code-line" id="line-pq">&nbsp;&nbsp;&nbsp;&nbsp;pq = [(0, start)] <span
+                            class="code-comment"># (cost, node)</span></div>
+                    <div class="code-line" id="line-loop">&nbsp;&nbsp;&nbsp;&nbsp;<span
+                            class="code-keyword">while</span> pq:</div>
+                    <div class="code-line" id="line-pop">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cur_dist, curr
+                        = heapq.heappop(pq)</div>
+                    <div class="code-line" id="line-check">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                            class="code-keyword">if</span> curr == target: <span class="code-keyword">return</span> path
+                    </div>
+                    <div class="code-line" id="line-relax">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                            class="code-keyword">if</span> cur_dist > dists[curr]: <span
+                            class="code-keyword">continue</span></div>
+                    <div class="code-line" id="line-neighbors">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                            class="code-keyword">for</span> n, weight <span class="code-keyword">in</span>
+                        get_neighbors(curr):</div>
+                    <div class="code-line" id="line-update">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                            class="code-keyword">if</span> dists[curr] + weight < dists[n]:</div>
+                            <div class="code-line" id="line-push">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dists[n]
+                                = ...; heapq.heappush(pq, ...)</div>
+                    </div>
+                </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="../js/visualizations/graph_dijkstra.js"></script>
+</body>
+
+</html>

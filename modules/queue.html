@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>队列 (Queue) - AlgoViz Py</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Queue specific styles */
+        .queue-container-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 200px;
+            position: relative;
+        }
+
+        .queue-track {
+            display: flex;
+            flex-direction: row;
+            /* FIFO display: Left is Head, Right is Tail */
+            align-items: center;
+            justify-content: flex-start;
+            height: 100px;
+            padding: 0 10px;
+            min-width: 400px;
+            border-top: 4px solid var(--bg-accent);
+            border-bottom: 4px solid var(--bg-accent);
+            /* border-radius: 12px; */
+            background: linear-gradient(90deg, rgba(30, 41, 59, 0.2) 0%, rgba(30, 41, 59, 0.5) 100%);
+            overflow: hidden;
+            /* Hide entering items */
+        }
+
+        .queue-item {
+            min-width: 60px;
+            height: 60px;
+            background-color: var(--primary-color);
+            margin-right: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-family: var(--font-mono);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+            /* Initial state for animation */
+            opacity: 0;
+            transform: translateX(50px);
+            animation: slideLeftIn 0.4s forwards;
+        }
+
+        .queue-item.dequeuing {
+            background-color: var(--danger-color);
+            transform: translateY(50px);
+            opacity: 0;
+        }
+
+        @keyframes slideLeftIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .label-head,
+        .label-tail {
+            position: absolute;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: bold;
+        }
+
+        .label-head {
+            left: 10px;
+            top: -25px;
+            color: var(--success-color);
+        }
+
+        .label-tail {
+            right: 10px;
+            top: -25px;
+            color: var(--warning-color);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>AlgoViz Py</h1>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <span>仪表盘 (Dashboard)</span>
+                    </a>
+                </li>
+
+                <li class="nav-category">排序算法 (Sorting)</li>
+                <li class="nav-item">
+                    <a href="bubble_sort.html" class="nav-link">冒泡排序 (Bubble)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="selection_sort.html" class="nav-link">选择排序 (Selection)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="insertion_sort.html" class="nav-link">插入排序 (Insertion)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="quick_sort.html" class="nav-link">快速排序 (Quick)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="merge_sort.html" class="nav-link">归并排序 (Merge)</a>
+                </li>
+
+                <li class="nav-category">线性结构 (Linear)</li>
+                <li class="nav-item">
+                    <a href="linked_list.html" class="nav-link">链表 (Linked List)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="stack.html" class="nav-link">栈 (Stack)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="queue.html" class="nav-link active">队列 (Queue)</a>
+                </li>
+
+                <li class="nav-category">搜索算法 (Search)</li>
+                <li class="nav-item">
+                    <a href="binary_search.html" class="nav-link">二分查找 (Binary)</a>
+                </li>
+
+                <li class="nav-category">树与图 (Trees & Graphs)</li>
+                <li class="nav-item">
+                    <a href="bst.html" class="nav-link">二叉搜索树 (BST)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="graph_bfs.html" class="nav-link">网格 BFS (Grid BFS)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="graph_dfs.html" class="nav-link">网格 DFS (Grid DFS)</a>
+                </li>
+                <li class="nav-item">
+                    <a href="graph_dijkstra.html" class="nav-link">Dijkstra 最短路径</a>
+                </li>
+
+                <!-- Problems -->
+                <li class="nav-category">经典题目 (Problems)</li>
+                <li class="nav-item"><a href="problem_valid_parentheses.html" class="nav-link">有效的括号 (Stack)</a></li>
+                <li class="nav-item"><a href="problem_reverse_linked_list.html" class="nav-link">反转链表 (Linked List)</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content" style="display: flex; flex-direction: column; overflow: hidden;">
+            <header style="margin-bottom: 1.5rem;">
+                <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">队列 (Queue)</h2>
+                <p style="color: var(--text-secondary);">
+                    先进先出 (FIFO - First In First Out) 的线性数据结构。
+                    像排队买票一样，先来的先服务。
+                </p>
+            </header>
+
+            <div class="viz-container">
+                <!-- Visualization Area -->
+                <div class="viz-area">
+                    <div id="queue-view" class="queue-container-wrapper">
+                        <div style="position: relative;">
+                            <div class="label-head">HEAD (队头)</div>
+                            <div class="label-tail">TAIL (队尾)</div>
+                            <div id="queue-track" class="queue-track">
+                                <!-- Items injected here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <input type="number" id="input-val" placeholder="Value"
+                            style="padding: 0.6rem; border-radius: 6px; border: 1px solid var(--bg-accent); background: var(--bg-primary); color: white; width: 80px;"
+                            value="10">
+                        <button id="btn-enqueue" class="btn btn-primary">Enqueue (入队)</button>
+                        <button id="btn-dequeue" class="btn btn-secondary">Dequeue (出队)</button>
+                        <button id="btn-peek" class="btn btn-secondary">Peek (查看队头)</button>
+                        <button id="btn-clear" class="btn btn-secondary">Clear (清空)</button>
+                    </div>
+
+                    <div id="status-text"
+                        style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                        Queue is empty
+                    </div>
+                </div>
+
+                <!-- Code Panel -->
+                <div class="code-panel" id="code-panel">
+                    <div class="code-line" id="line-class"><span class="code-keyword">class</span> <span
+                            class="code-func">Queue</span>:</div>
+                    <div class="code-line" id="line-init">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span>
+                        <span class="code-func">__init__</span>(self):
+                    </div>
+                    <div class="code-line" id="line-init-body">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.items = []</div>
+                    <div class="code-line"> </div>
+                    <div class="code-line" id="line-enq">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span>
+                        <span class="code-func">enqueue</span>(self, item):
+                    </div>
+                    <div class="code-line" id="line-enq-body">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.items.append(item)</div>
+                    <div class="code-line"> </div>
+                    <div class="code-line" id="line-deq">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span>
+                        <span class="code-func">dequeue</span>(self):
+                    </div>
+                    <div class="code-line" id="line-deq-check">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                            class="code-keyword">if not</span> self.items: <span class="code-keyword">return None</span>
+                    </div>
+                    <div class="code-line" id="line-deq-body">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                            class="code-keyword">return</span> self.items.pop(0)</div>
+                    <div class="code-line"> </div>
+                    <div class="code-line" id="line-peek">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span>
+                        <span class="code-func">peek</span>(self):
+                    </div>
+                    <div class="code-line" id="line-peek-check">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                            class="code-keyword">if not</span> self.items: <span class="code-keyword">return None</span>
+                    </div>
+                    <div class="code-line" id="line-peek-body">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                            class="code-keyword">return</span> self.items[0]</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="../js/visualizations/queue.js"></script>
+</body>
+
+</html>
