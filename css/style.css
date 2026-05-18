@@ -18,7 +18,7 @@
     /* Red for errors/swaps */
 
     --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --border-radius: 12px;
+    --border-radius: 8px;
 
     /* Typography */
     --font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -55,6 +55,7 @@ body {
     display: flex;
     flex-direction: column;
     border-right: 1px solid var(--bg-accent);
+    min-height: 0;
 }
 
 .sidebar-header h1 {
@@ -112,6 +113,34 @@ body {
     position: relative;
 }
 
+.page-header {
+    margin-bottom: 1.5rem;
+}
+
+.page-title {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.page-description {
+    color: var(--text-secondary);
+}
+
+.section-title {
+    color: var(--text-secondary);
+    margin: 2rem 0 1rem;
+}
+
+.section-title:first-child {
+    margin-top: 0;
+}
+
+.card-meta {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: var(--text-accent);
+}
+
 /* Dashboard Cards */
 .modules-grid {
     display: grid;
@@ -155,6 +184,7 @@ body {
     display: flex;
     gap: 2rem;
     height: calc(100vh - 4rem);
+    min-height: 0;
 }
 
 .viz-area {
@@ -165,6 +195,7 @@ body {
     display: flex;
     flex-direction: column;
     position: relative;
+    min-width: 0;
 }
 
 .viz-canvas {
@@ -213,6 +244,28 @@ body {
     gap: 1rem;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
+}
+
+.control-spacer {
+    margin-left: auto;
+}
+
+.control-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.control-field {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border: 1px solid var(--bg-accent);
+    padding: 0.45rem 0.6rem;
+    border-radius: 6px;
+    font: inherit;
 }
 
 .btn {
@@ -257,6 +310,7 @@ body {
     overflow-x: auto;
     /* Enable horizontal scrolling */
     border: 1px solid var(--bg-accent);
+    min-width: 280px;
 }
 
 .code-line {
@@ -282,4 +336,95 @@ body {
 
 .code-func {
     color: #dcdcaa;
+}
+
+@media (max-width: 980px) {
+    body {
+        height: auto;
+        min-height: 100vh;
+        overflow: auto;
+    }
+
+    .app-container {
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .sidebar {
+        width: 100%;
+        max-height: 42vh;
+        border-right: 0;
+        border-bottom: 1px solid var(--bg-accent);
+        padding: 1rem;
+    }
+
+    .sidebar-header h1 {
+        margin-bottom: 1rem;
+    }
+
+    .nav-links {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 0.35rem;
+        padding-right: 0;
+    }
+
+    .nav-category {
+        grid-column: 1 / -1;
+        margin: 0.75rem 0 0.25rem;
+    }
+
+    .main-content {
+        padding: 1rem;
+        overflow: visible;
+    }
+
+    .viz-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .viz-area,
+    .code-panel {
+        width: 100%;
+        min-height: 360px;
+    }
+
+    .control-spacer {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 640px) {
+    .modules-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .viz-area {
+        padding: 1rem;
+    }
+
+    .viz-canvas {
+        gap: 3px;
+        overflow-x: auto;
+        justify-content: flex-start;
+    }
+
+    .viz-bar {
+        width: 28px;
+        flex: 0 0 28px;
+    }
+
+    .controls {
+        justify-content: stretch;
+    }
+
+    .btn,
+    .control-field {
+        flex: 1 1 auto;
+    }
+
+    .page-title {
+        font-size: 1.45rem;
+    }
 }
