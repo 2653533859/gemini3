@@ -165,7 +165,7 @@
                 <!-- Visualization Area -->
                 <div class="viz-area">
                     <div class="input-group">
-                        <input type="text" id="input-str" value="{[]}()" placeholder="输入括号字符串...">
+                        <input type="text" id="input-str" aria-label="括号字符串" value="{[]}()" placeholder="输入括号字符串...">
                         <button id="btn-start" class="btn btn-primary">开始验证</button>
                     </div>
 
@@ -177,7 +177,7 @@
                         <div id="stack-viz" class="stack-container"></div>
                     </div>
 
-                    <div id="status-text"
+                    <div id="status-text" aria-live="polite"
                         style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
                         准备就绪
                     </div>

@@ -46,6 +46,8 @@
 ## 维护说明
 
 - 公共侧边栏导航由 `js/layout.js` 统一生成，新增模块时优先修改这里。
+- 模块清单集中维护在 `js/modules_data.js`，首页卡片和侧边栏共用同一份数据。
+- 排序类页面的播放、暂停、重置、速度控制由 `js/animation_controller.js` 统一管理。
 - 全局视觉样式和响应式布局集中在 `css/style.css`。
 - 每个可视化模块对应一个 `modules/*.html` 页面和一个 `js/visualizations/*.js` 脚本。
 

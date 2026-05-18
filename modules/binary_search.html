@@ -145,14 +145,14 @@
 
                     <div class="controls">
                         <button id="btn-generate" class="btn btn-secondary">生成有序数组</button>
-                        <input type="number" id="input-target" placeholder="Target"
+                        <input type="number" id="input-target" aria-label="目标值" placeholder="Target"
                             style="padding: 0.6rem; border-radius: 6px; border: 1px solid var(--bg-accent); background: var(--bg-primary); color: white; width: 80px;"
                             value="">
                         <button id="btn-start" class="btn btn-primary">查找</button>
                         <button id="btn-reset" class="btn btn-secondary">重置</button>
                     </div>
 
-                    <div id="status-text"
+                    <div id="status-text" aria-live="polite"
                         style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
                         准备就绪
                     </div>

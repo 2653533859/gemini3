@@ -1,10 +1,11 @@
 import { VizEngine } from '../viz_engine.js';
+import { generateRandomArray } from '../utils.js';
+import { createArrayControls } from '../animation_controller.js';
 
 class MergeSortViz extends VizEngine {
     constructor() {
         super();
         this.name = 'Merge Sort';
-        this.init();
     }
 
     async start() {
@@ -16,11 +17,9 @@ class MergeSortViz extends VizEngine {
         // In-place merge sort wrapper to match visualization style
         await this.mergeSort(0, this.array.length - 1);
 
-        if (!this.paused) {
+        if (!this.isStopped) {
             this.updateStatus('排序完成！');
-            for (let i = 0; i < this.array.length; i++) {
-                this.highlight([i], 'sorted');
-            }
+            this.markAllSorted();
             this.toggleButtons(false);
             this.isSorting = false;
         }
@@ -90,10 +89,13 @@ class MergeSortViz extends VizEngine {
                 start2++;
             }
             // Clear compare highlights for next iteration
-            this.unhighlight([start - 1, start2 - 1, index]); // loosen cleanup
+            this.unhighlight([start - 1, start2 - 1]);
             this.render();
         }
     }
 }
 
 const viz = new MergeSortViz();
+createArrayControls(viz, {
+    createArray: () => generateRandomArray(15, 10, 180),
+});

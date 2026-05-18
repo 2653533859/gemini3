@@ -121,7 +121,7 @@
                     </div>
 
                     <div class="controls">
-                        <input type="number" id="input-val" placeholder="Value"
+                        <input type="number" id="input-val" aria-label="数值" placeholder="Value"
                             style="padding: 0.6rem; border-radius: 6px; border: 1px solid var(--bg-accent); background: var(--bg-primary); color: white; width: 80px;"
                             value="10">
                         <button id="btn-enqueue" class="btn btn-primary">Enqueue (入队)</button>
@@ -130,7 +130,7 @@
                         <button id="btn-clear" class="btn btn-secondary">Clear (清空)</button>
                     </div>
 
-                    <div id="status-text"
+                    <div id="status-text" aria-live="polite"
                         style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
                         Queue is empty
                     </div>

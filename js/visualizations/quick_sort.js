@@ -1,10 +1,11 @@
 import { VizEngine } from '../viz_engine.js';
+import { generateRandomArray } from '../utils.js';
+import { createArrayControls } from '../animation_controller.js';
 
 class QuickSortViz extends VizEngine {
     constructor() {
         super();
         this.name = 'Quick Sort';
-        this.init();
     }
 
     async start() {
@@ -15,12 +16,9 @@ class QuickSortViz extends VizEngine {
 
         await this.quickSort(0, this.array.length - 1);
 
-        if (!this.paused) { // Only if not manually stopped
+        if (!this.isStopped) {
             this.updateStatus('排序完成！');
-            // Show all as sorted/completed
-            for (let i = 0; i < this.array.length; i++) {
-                this.highlight([i], 'sorted');
-            }
+            this.markAllSorted();
             this.toggleButtons(false);
             this.isSorting = false;
         }
@@ -40,7 +38,7 @@ class QuickSortViz extends VizEngine {
             await this.quickSort(pi + 1, high);
         } else if (low === high) {
             // Single element is sorted in its place
-            this.highlight([low], 'sorted');
+            this.markSorted(low);
         }
     }
 
@@ -111,8 +109,8 @@ class QuickSortViz extends VizEngine {
         [this.array[i + 1], this.array[high]] = [this.array[high], this.array[i + 1]];
         this.render();
 
-        // Mark pivot position as Sorted (it is now in final place)
-        this.highlight([i + 1], 'sorted');
+        // Mark pivot position as sorted; it is now in final place.
+        this.markSorted(i + 1);
         await this.sleep();
 
         this.highlightCode('line-return-i');
@@ -122,3 +120,6 @@ class QuickSortViz extends VizEngine {
 
 // Initialize
 const viz = new QuickSortViz();
+createArrayControls(viz, {
+    createArray: () => generateRandomArray(15, 10, 180),
+});

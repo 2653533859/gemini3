@@ -1,26 +1,29 @@
-import { sleep, getSpeed } from './utils.js';
+import { sleep, getSpeed, generateRandomArray } from './utils.js';
 
 /**
  * Base Visualization Engine
  * Handles rendering of array bars and basic animation states.
  */
 export class VizEngine {
-    constructor(containerId) {
+    constructor(containerId = 'viz-canvas') {
         this.container = document.getElementById(containerId);
         this.array = [];
         this.bars = [];
         this.isPaused = false;
         this.isStopped = false;
+        this.isSorting = false;
     }
 
     // Initialize the visualization with a data array
-    init(array) {
+    init(array = generateRandomArray(15, 10, 180)) {
         this.array = [...array];
         this.render();
     }
 
     // Render the current state of the array
     render() {
+        if (!this.container) return;
+
         this.container.innerHTML = '';
         this.bars = [];
 
@@ -89,6 +92,15 @@ export class VizEngine {
         this.bars.forEach(bar => bar.classList.add('sorted'));
     }
 
+    // Remove highlight classes from selected bars
+    unhighlight(indices) {
+        const classes = ['compare', 'swap', 'sorted', 'active'];
+        indices.forEach(i => {
+            if (!this.bars[i]) return;
+            this.bars[i].classList.remove(...classes);
+        });
+    }
+
     // Clear all status classes
     clearColors() {
         this.bars.forEach(bar => {
@@ -109,6 +121,10 @@ export class VizEngine {
         await sleep(getSpeed());
     }
 
+    sleep() {
+        return this.wait();
+    }
+
     // Control methods
     pause() { this.isPaused = true; }
     resume() { this.isPaused = false; }
@@ -116,7 +132,18 @@ export class VizEngine {
     reset() {
         this.isStopped = false;
         this.isPaused = false;
+        this.isSorting = false;
         this.clearColors();
+    }
+
+    toggleButtons(isRunning) {
+        const btnStart = document.getElementById('btn-start');
+        const btnGenerate = document.getElementById('btn-generate');
+        const btnPause = document.getElementById('btn-pause');
+
+        if (btnStart) btnStart.disabled = isRunning;
+        if (btnGenerate) btnGenerate.disabled = isRunning;
+        if (btnPause) btnPause.disabled = !isRunning;
     }
     // Highlight a line of code in the code panel
     highlightCode(lineId) {

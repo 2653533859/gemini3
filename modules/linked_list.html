@@ -142,10 +142,10 @@
                     </div>
 
                     <div class="controls" style="flex-wrap: wrap;">
-                        <input type="number" id="input-val" placeholder="Value"
+                        <input type="number" id="input-val" aria-label="数值" placeholder="Value"
                             style="padding: 0.6rem; border-radius: 6px; border: 1px solid var(--bg-accent); background: var(--bg-primary); color: white; width: 70px;"
                             value="10">
-                        <input type="number" id="input-idx" placeholder="Index"
+                        <input type="number" id="input-idx" aria-label="索引" placeholder="Index"
                             style="padding: 0.6rem; border-radius: 6px; border: 1px solid var(--bg-accent); background: var(--bg-primary); color: white; width: 70px;"
                             value="0">
 
@@ -155,7 +155,7 @@
                         <button id="btn-remove" class="btn btn-secondary">Remove Val</button>
                     </div>
 
-                    <div id="status-text"
+                    <div id="status-text" aria-live="polite"
                         style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
                         List is empty
                     </div>

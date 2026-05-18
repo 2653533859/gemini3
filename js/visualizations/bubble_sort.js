@@ -1,5 +1,6 @@
 import { VizEngine } from '../viz_engine.js';
-import { generateRandomArray, setSpeed } from '../utils.js';
+import { generateRandomArray } from '../utils.js';
+import { createArrayControls } from '../animation_controller.js';
 
 class BubbleSortViz extends VizEngine {
     constructor() {
@@ -87,75 +88,6 @@ class BubbleSortViz extends VizEngine {
 
 // Controller Logic
 const viz = new BubbleSortViz();
-let array = generateRandomArray(15, 10, 180); // Adjusted for visual height
-viz.init(array);
-
-// Buttons
-const btnStart = document.getElementById('btn-start');
-const btnGenerate = document.getElementById('btn-generate');
-const btnPause = document.getElementById('btn-pause');
-const btnReset = document.getElementById('btn-reset');
-const selectSpeed = document.getElementById('select-speed');
-
-btnGenerate.onclick = () => {
-    if (isRunning) return;
-    array = generateRandomArray(15, 10, 180);
-    viz.reset();
-    viz.init(array);
-};
-
-let isRunning = false;
-
-btnStart.onclick = async () => {
-    if (isRunning) return; // Prevent double start
-
-    // Check if it's paused
-    if (viz.isPaused) {
-        viz.resume();
-        btnPause.innerText = '暂停';
-        btnPause.disabled = false;
-        return;
-    }
-
-    isRunning = true;
-    btnStart.disabled = true;
-    btnGenerate.disabled = true;
-    btnPause.disabled = false;
-
-    try {
-        await viz.run();
-    } catch (e) {
-        console.log('Stopped/Reset');
-    }
-
-    isRunning = false;
-    btnStart.disabled = false;
-    btnGenerate.disabled = false;
-    btnPause.disabled = true;
-    btnPause.innerText = '暂停';
-};
-
-btnPause.onclick = () => {
-    if (viz.isPaused) {
-        viz.resume();
-        btnPause.innerText = '暂停';
-    } else {
-        viz.pause();
-        btnPause.innerText = '继续';
-    }
-};
-
-btnReset.onclick = () => {
-    viz.stop();
-    viz.reset();
-    viz.init(array);
-    isRunning = false;
-    btnStart.disabled = false;
-    btnGenerate.disabled = false;
-    btnPause.disabled = true;
-    btnPause.innerText = '暂停';
-};
-
-selectSpeed.onchange = (e) => {
-    setSpeed(e.target.value);
-};
+createArrayControls(viz, {
+    createArray: () => generateRandomArray(15, 10, 180),
+});

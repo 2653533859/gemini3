@@ -12,7 +12,7 @@ class GraphDFSViz extends VizEngine {
         this.startPos = { r: 5, c: 4 };
         this.targetPos = { r: 5, c: 15 };
         this.walls = new Set();
-        this.isMousePressed = false;
+        this.isPointerDown = false;
 
         this.setupGrid();
         this.initControls();
@@ -38,12 +38,23 @@ class GraphDFSViz extends VizEngine {
                 if (r === this.startPos.r && c === this.startPos.c) node.classList.add('start');
                 else if (r === this.targetPos.r && c === this.targetPos.c) node.classList.add('target');
 
-                node.addEventListener('mousedown', () => {
-                    this.isMousePressed = true;
+                node.setAttribute('role', 'button');
+                node.tabIndex = 0;
+                this.updateNodeLabel(node, r, c);
+
+                node.addEventListener('pointerdown', event => {
+                    event.preventDefault();
+                    this.isPointerDown = true;
                     this.toggleWall(r, c);
                 });
-                node.addEventListener('mouseenter', () => {
-                    if (this.isMousePressed) this.toggleWall(r, c);
+                node.addEventListener('pointerenter', () => {
+                    if (this.isPointerDown) this.toggleWall(r, c);
+                });
+                node.addEventListener('keydown', event => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        this.toggleWall(r, c);
+                    }
                 });
 
                 container.appendChild(node);
@@ -51,7 +62,19 @@ class GraphDFSViz extends VizEngine {
             }
             this.grid.push(rowArr);
         }
-        document.addEventListener('mouseup', () => this.isMousePressed = false);
+        document.addEventListener('pointerup', () => this.isPointerDown = false);
+        document.addEventListener('pointercancel', () => this.isPointerDown = false);
+    }
+
+    updateNodeLabel(node, r, c) {
+        const key = `${r},${c}`;
+        let state = '空白节点';
+        if (r === this.startPos.r && c === this.startPos.c) state = '起点';
+        else if (r === this.targetPos.r && c === this.targetPos.c) state = '终点';
+        else if (this.walls.has(key)) state = '墙壁';
+
+        node.setAttribute('aria-label', `${state}，第 ${r + 1} 行，第 ${c + 1} 列`);
+        node.setAttribute('aria-pressed', this.walls.has(key) ? 'true' : 'false');
     }
 
     toggleWall(r, c) {
@@ -67,6 +90,7 @@ class GraphDFSViz extends VizEngine {
             this.walls.add(key);
             this.grid[r][c].classList.add('wall');
         }
+        this.updateNodeLabel(this.grid[r][c], r, c);
     }
 
     initControls() {
@@ -90,6 +114,7 @@ class GraphDFSViz extends VizEngine {
         for (let r = 0; r < this.rows; r++) {
             for (let c = 0; c < this.cols; c++) {
                 this.grid[r][c].classList.remove('wall');
+                this.updateNodeLabel(this.grid[r][c], r, c);
             }
         }
         this.updateStatus('墙壁已清空');

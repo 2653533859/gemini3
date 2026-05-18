@@ -15,7 +15,7 @@ class GraphDijkstraViz extends VizEngine {
         this.walls = new Set();
         this.weights = new Set(); // "Mud" nodes with cost 5
 
-        this.isMousePressed = false;
+        this.isPointerDown = false;
         this.drawMode = 'wall'; // 'wall' or 'weight'
 
         this.setupGrid();
@@ -41,12 +41,23 @@ class GraphDijkstraViz extends VizEngine {
                 if (r === this.startPos.r && c === this.startPos.c) node.classList.add('start');
                 else if (r === this.targetPos.r && c === this.targetPos.c) node.classList.add('target');
 
-                node.addEventListener('mousedown', () => {
-                    this.isMousePressed = true;
+                node.setAttribute('role', 'button');
+                node.tabIndex = 0;
+                this.updateNodeLabel(node, r, c);
+
+                node.addEventListener('pointerdown', event => {
+                    event.preventDefault();
+                    this.isPointerDown = true;
                     this.handleDraw(r, c);
                 });
-                node.addEventListener('mouseenter', () => {
-                    if (this.isMousePressed) this.handleDraw(r, c);
+                node.addEventListener('pointerenter', () => {
+                    if (this.isPointerDown) this.handleDraw(r, c);
+                });
+                node.addEventListener('keydown', event => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        this.handleDraw(r, c);
+                    }
                 });
 
                 container.appendChild(node);
@@ -54,7 +65,21 @@ class GraphDijkstraViz extends VizEngine {
             }
             this.grid.push(rowArr);
         }
-        document.addEventListener('mouseup', () => this.isMousePressed = false);
+        document.addEventListener('pointerup', () => this.isPointerDown = false);
+        document.addEventListener('pointercancel', () => this.isPointerDown = false);
+    }
+
+    updateNodeLabel(node, r, c) {
+        const key = `${r},${c}`;
+        let state = '空白节点';
+        if (r === this.startPos.r && c === this.startPos.c) state = '起点';
+        else if (r === this.targetPos.r && c === this.targetPos.c) state = '终点';
+        else if (this.walls.has(key)) state = '墙壁';
+        else if (this.weights.has(key)) state = '泥沼，权重 5';
+
+        const active = this.walls.has(key) || this.weights.has(key);
+        node.setAttribute('aria-label', `${state}，第 ${r + 1} 行，第 ${c + 1} 列`);
+        node.setAttribute('aria-pressed', active ? 'true' : 'false');
     }
 
     handleDraw(r, c) {
@@ -94,6 +119,8 @@ class GraphDijkstraViz extends VizEngine {
                 node.classList.add('weight');
             }
         }
+
+        this.updateNodeLabel(node, r, c);
     }
 
     initControls() {
@@ -104,18 +131,25 @@ class GraphDijkstraViz extends VizEngine {
         btnWall.onclick = () => {
             this.drawMode = 'wall';
             btnWall.classList.add('mode-active');
+            btnWall.setAttribute('aria-pressed', 'true');
             btnWall.style.border = "1px solid var(--primary-color)";
             btnWeight.classList.remove('mode-active');
+            btnWeight.setAttribute('aria-pressed', 'false');
             btnWeight.style.border = "none";
         };
 
         btnWeight.onclick = () => {
             this.drawMode = 'weight';
             btnWeight.classList.add('mode-active');
+            btnWeight.setAttribute('aria-pressed', 'true');
             btnWeight.style.border = "1px solid var(--primary-color)";
             btnWall.classList.remove('mode-active');
+            btnWall.setAttribute('aria-pressed', 'false');
             btnWall.style.border = "none";
         };
+
+        btnWall.setAttribute('aria-pressed', 'true');
+        btnWeight.setAttribute('aria-pressed', 'false');
 
         document.getElementById('btn-start').onclick = () => this.start();
         document.getElementById('btn-clear-path').onclick = () => this.clearPath();
@@ -139,6 +173,7 @@ class GraphDijkstraViz extends VizEngine {
         for (let r = 0; r < this.rows; r++) {
             for (let c = 0; c < this.cols; c++) {
                 this.grid[r][c].classList.remove('wall', 'weight');
+                this.updateNodeLabel(this.grid[r][c], r, c);
             }
         }
         this.updateStatus('地图已重置');

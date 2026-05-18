@@ -1,0 +1,144 @@
+export const moduleGroups = [
+    {
+        title: '排序算法 (Sorting)',
+        dashboardTitle: '模块一：基础排序',
+        items: [
+            {
+                href: 'modules/bubble_sort.html',
+                navLabel: '冒泡排序 (Bubble)',
+                title: '冒泡排序 (Bubble Sort)',
+                description: '通过重复交换相邻的逆序元素，像气泡一样将最大值“浮”到顶端。',
+                meta: '包含 Python 代码对照',
+            },
+            {
+                href: 'modules/selection_sort.html',
+                navLabel: '选择排序 (Selection)',
+                title: '选择排序 (Selection Sort)',
+                description: '每次从未排序部分选择最小值放到已排序部分的末尾。',
+                meta: '包含 Python 代码对照',
+            },
+            {
+                href: 'modules/insertion_sort.html',
+                navLabel: '插入排序 (Insertion)',
+                title: '插入排序 (Insertion Sort)',
+                description: '构建有序序列，对于未排序数据，在已排序序列中从后向前扫描，找到相应位置并插入。',
+                meta: '包含 Python 代码对照',
+            },
+            {
+                href: 'modules/quick_sort.html',
+                navLabel: '快速排序 (Quick)',
+                title: '快速排序 (Quick Sort)',
+                description: '分治法经典应用。包含 Partition 过程可视化。',
+                meta: '包含 Python 代码对照',
+            },
+            {
+                href: 'modules/merge_sort.html',
+                navLabel: '归并排序 (Merge)',
+                title: '归并排序 (Merge Sort)',
+                description: '稳定排序。递归地将数组分成两半，再合并有序数组。',
+                meta: '包含 Python 代码对照',
+            },
+        ],
+    },
+    {
+        title: '线性结构 (Linear)',
+        dashboardTitle: '模块二：线性结构',
+        items: [
+            {
+                href: 'modules/stack.html',
+                navLabel: '栈 (Stack)',
+                title: '栈 (Stack)',
+                description: '后进先出 (LIFO) 的数据结构。演示 Push、Pop 操作。',
+                meta: '包含 Python 代码对照',
+            },
+            {
+                href: 'modules/queue.html',
+                navLabel: '队列 (Queue)',
+                title: '队列 (Queue)',
+                description: '先进先出 (FIFO)。',
+                meta: '包含 Python 代码对照',
+            },
+            {
+                href: 'modules/linked_list.html',
+                navLabel: '链表 (Linked List)',
+                title: '链表 (Linked List)',
+                description: '节点通过指针连接。支持头插、尾插和删除。',
+                meta: '包含 Python 代码对照',
+            },
+        ],
+    },
+    {
+        title: '搜索算法 (Search)',
+        dashboardTitle: '模块三：搜索算法',
+        items: [
+            {
+                href: 'modules/binary_search.html',
+                navLabel: '二分查找 (Binary)',
+                title: '二分查找 (Binary Search)',
+                description: '在有序数组中查找目标值，直观看到 O(log n) 的搜索区间收缩。',
+                meta: '包含 Python 代码对照',
+            },
+        ],
+    },
+    {
+        title: '树与图 (Trees & Graphs)',
+        dashboardTitle: '模块四：树与图',
+        items: [
+            {
+                href: 'modules/bst.html',
+                navLabel: '二叉搜索树 (BST)',
+                title: '二叉搜索树 (BST)',
+                description: '可视化树形结构，演示插入与递归查找。',
+                meta: '包含 Python 详细教程',
+            },
+            {
+                href: 'modules/graph_bfs.html',
+                navLabel: '网格 BFS (Grid BFS)',
+                title: '网格 BFS (Breadth-First)',
+                description: '广度优先搜索最短路径。探索层级扩张。',
+                meta: 'Grid Pathfinding',
+            },
+            {
+                href: 'modules/graph_dfs.html',
+                navLabel: '网格 DFS (Grid DFS)',
+                title: '网格 DFS (Depth-First)',
+                description: '深度优先搜索。沿一条路径走到底。',
+                meta: 'Grid Pathfinding',
+            },
+            {
+                href: 'modules/graph_dijkstra.html',
+                navLabel: 'Dijkstra 最短路径',
+                title: 'Dijkstra 最短路径',
+                description: '带权图的最短路径算法。可处理不同代价的地形。',
+                meta: 'Weighted Graph',
+            },
+        ],
+    },
+    {
+        title: '经典题目 (Problems)',
+        dashboardTitle: '模块五：动态规划与经典题目',
+        items: [
+            {
+                href: 'modules/problem_climbing_stairs.html',
+                navLabel: '爬楼梯 (DP)',
+                title: '爬楼梯 (Climbing Stairs)',
+                description: '通过 DP 表格演示状态转移，理解递推关系和记忆化思想。',
+                meta: 'Dynamic Programming',
+            },
+            {
+                href: 'modules/problem_valid_parentheses.html',
+                navLabel: '有效的括号 (Stack)',
+                title: '有效的括号 (Valid Parentheses)',
+                description: '用栈追踪括号匹配过程，观察入栈、匹配和失败状态。',
+                meta: 'Stack Problem',
+            },
+            {
+                href: 'modules/problem_reverse_linked_list.html',
+                navLabel: '反转链表 (Linked List)',
+                title: '反转链表 (Reverse Linked List)',
+                description: '跟踪 prev、curr、next 三个指针，理解链表反转的核心动作。',
+                meta: 'Linked List Problem',
+            },
+        ],
+    },
+];
